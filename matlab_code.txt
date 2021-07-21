@@ -1,0 +1,89 @@
+%defining plant fcn
+>> num=[1];
+>> den=[1 8 12];
+>> p=tf(num,den);
+p
+p =
+1
+--------------
+s^2 + 8 s + 12
+Continuous-time transfer function.
+>> %defining values of controller fcn
+>> kp=5;
+>> kd=1;
+>> ki=15.25;
+>> %defining value of poles used
+>> a=-2;
+>> b=-6;13
+>> ztf=[-2.5-3*j;-2.5+3*j];
+>> ptf=[0;a;b];
+>> [numtf,dentf]=zp2tf(ztf,ptf,1);
+>> rlocus(numtf,dentf);
+>> [k,poles]=rlocfind(numtf,dentf);
+Select a point in the graphics window
+selected_point =-1.1600e+02 + 4.4409e-16i
+>> k
+k = 112.8389
+>> %defining pid controller now
+>> c1=pid(kp,ki,kd);
+>> tf1=feedback(k*c1*p,1);
+>> tf1
+tf1 =
+112.8 s^2 + 564.2 s + 1721
+--------------------------------
+s^3 + 120.8 s^2 + 576.2 s + 1721
+>> ts=0.1;14
+>> z1=c2d(tf1,ts);
+>> z1
+z1 =
+0.9855 z^2 - 1.468 z + 0.5987
+-----------------------------------
+z^3 - 1.5 z^2 + 0.6164 z - 5.65e-06
+Sample time: 0.1 seconds
+>> step(tf1,z1);
+>> step(z1);
+>> step(tf1,z1);
+>> bode(tf1,z1);
+>> nyquist(tf1,z1);
+>> i1=stepinfo(tf1);
+>> i2=stepinfo(z1);
+>> %defining pi controller
+>> c2=pid(kp,ki);
+>> tf2=feedback(c2*p,1);
+>> tf215
+tf2 =
+5 s + 15.25
+--------------------------
+s^3 + 8 s^2 + 17 s + 15.25
+>> z2=c2d(tf2,ts);
+>> z2
+z2 =
+0.0213 z^2 + 0.002369 z - 0.01332
+----------------------------------
+z^3 - 2.328 z^2 + 1.788 z - 0.4493
+Sample time: 0.1 seconds
+>> step(tf2,z2);
+>> bode(tf2,z2);
+>> nyquist(tf2,z2);
+>> i3=stepinfo(tf2);
+>> i4=stepinfo(z2);
+>> %defining p controller
+>> c3=pid(kp);16
+>> tf3=feedback(c3*p*k,1);
+>> tf3
+tf3 =
+564.2
+-----------------
+s^2 + 8 s + 576.2
+>> z3=c2d(tf3,ts);
+>> z3
+z3 =
+1.371 z + 0.9866
+----------------------
+z^2 + 0.958 z + 0.4493
+Sample time: 0.1 seconds
+>> step(tf3,z3);
+>> bode(tf3,z3);
+>> nyquist(tf3,z3);
+>> i5=stepinfo(tf3);
+>> i6=stepinfo(z3);
